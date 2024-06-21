@@ -1,0 +1,3 @@
+[submodule "src/mudpad"]
+	path = src/mudpad
+	url = https://github.com/gesslar/mudpad.git
