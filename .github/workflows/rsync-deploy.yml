@@ -1,4 +1,4 @@
-name: SFTP Deploy
+name: RSYNC Deploy
 
 on:
   push:
