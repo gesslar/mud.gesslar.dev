@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mudlet Packages</title>
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Ensure the GitHub icon link is always black */
+        .github-icon-link {
+            color: black;
+        }
+        .github-icon-link:hover {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Mudlet Packages</h1>
+        <p>To install these packages in Mudlet, simply drag and drop the links onto Mudlet. Ensure you're at least at Mudlet v4.13.1</p>
+        <p>Click on the GitHub <i class="fab fa-github"></i> link to visit the repository. There might be help there. Or not. It depends.</p>
+        <ul id="package-list">
+        </ul>
+    </div>
+    <div>
+        There's also a <a href="bloodjewel_calculator/">bloodjewel calculator</a>, if you care.
+    </div>
+
+    <script>
+        // Function to fetch dynamic packages from GitHub
+        async function fetchGitHubPackages(username, topic) {
+            const url = `https://api.github.com/search/repositories?q=user:${username}+topic:${topic}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.items.map(repo => ({
+                name: repo.name,
+                description: repo.description || 'No description provided',
+                html_url: repo.html_url
+            }));
+        }
+
+        // Function to get all current packages from the list
+        function getCurrentPackages() {
+            const packageList = document.getElementById('package-list');
+            const packageItems = packageList.querySelectorAll('li');
+            const packages = [];
+
+            packageItems.forEach(item => {
+                const link = item.querySelector('a');
+                const name = link.textContent.replace('.mpackage', '');
+                const description = item.textContent.match(/\(([^)]+)\)/)[1];
+                const isStatic = item.getAttribute('data-static') === 'true';
+                const html_url = isStatic ? null : item.querySelector('a').href;
+                packages.push({ name, description, html_url, isStatic });
+            });
+
+            return packages;
+        }
+
+        // Function to display packages
+        function displayPackages(packages) {
+            // Sort packages by name
+            packages.sort((a, b) => a.name.localeCompare(b.name));
+
+            const packageList = document.getElementById('package-list');
+            packageList.innerHTML = ''; // Clear existing list
+
+            packages.forEach(pkg => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                if (pkg.isStatic) {
+                    link.href = `mudlet/${pkg.name}.mpackage`;
+                } else {
+                    link.href = `https://github.com/gesslar/${pkg.name}/releases/latest/download/${pkg.name}.mpackage`;
+                }
+                link.textContent = `${pkg.name}.mpackage`;
+                listItem.appendChild(link);
+                listItem.append(` (${pkg.description}) `);
+
+                if (!pkg.isStatic) {
+                    // Add GitHub icon link for dynamic packages
+                    const iconLink = document.createElement('a');
+                    iconLink.href = pkg.html_url;
+                    iconLink.target = "_blank"; // Open in a new tab
+                    iconLink.className = 'github-icon-link';
+                    iconLink.innerHTML = '<i class="fab fa-github"></i>';
+                    listItem.appendChild(iconLink);
+                }
+
+                packageList.appendChild(listItem);
+            });
+        }
+
+        // Combine static and dynamic packages and display them
+        async function loadPackages() {
+            const username = 'gesslar';
+            const topic = 'mudlet-package';
+
+            // Fetch dynamic packages from GitHub
+            const dynamicPackages = await fetchGitHubPackages(username, topic);
+
+            // Get current static packages
+            const staticPackages = getCurrentPackages().filter(pkg => pkg.isStatic);
+
+            // Combine static and dynamic packages
+            const allPackages = [...staticPackages, ...dynamicPackages];
+
+            // Display all packages
+            displayPackages(allPackages);
+        }
+
+        // Load packages on page load
+        loadPackages();
+    </script>
+</body>
+</html>
