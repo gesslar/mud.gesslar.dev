@@ -15,6 +15,13 @@
         .github-icon-link:hover {
             color: black;
         }
+        /* Style for the static line at the bottom */
+        .footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -26,11 +33,17 @@
     <div>
         <h1>Mudlet Packages</h1>
         <p>To install these packages in Mudlet, simply drag and drop the links onto Mudlet. Ensure you're at least at Mudlet v4.13.1</p>
+        <p>Click on the GitHub <i class="fab fa-github"></i> link to visit the repository. There might be help there. Or not. It depends.</p>
         <ul id="package-list">
         </ul>
     </div>
+    <div>
+        There's also a <a href="bloodjewel_calculator/">bloodjewel calculator</a>, if you care.
+    </div>
+    <div class="footer">
+        <p>This page is on GitHub <a href="https://github.com/gesslar/mud.gesslar.dev" target="_blank" class="github-icon-link"><i class="fab fa-github"></i> mud.gesslar.dev</a></p>
+    </div>
 
-    <p>Click on the GitHub <i class="fab fa-github"></i> link to visit the repository. There might be help there. Or not. It depends.</p>
     <script>
         // Function to fetch dynamic repositories from GitHub
         async function fetchGitHubRepositories(username, topic) {
