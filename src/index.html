@@ -74,7 +74,7 @@
         }
 
         // Function to display repositories
-        function displayRepositories(repositories, listId, linkPrefix) {
+        function displayRepositories(repositories, listId, linkPrefix, isPackage = false) {
             // Sort repositories by name
             repositories.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -85,7 +85,14 @@
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
                 const cleanedName = repo.name.replace(/_/g, ' '); // Replace underscores with spaces
-                link.href = `${linkPrefix}${repo.name}`;
+
+                // Check if it's a package link and generate the correct URL
+                if (isPackage) {
+                    link.href = `${linkPrefix}${repo.name}/releases/latest/download/${repo.name}.mpackage`;
+                } else {
+                    link.href = `${linkPrefix}${repo.name}`;
+                }
+
                 link.textContent = cleanedName;
                 listItem.appendChild(link);
                 listItem.append(` (${repo.description}) `);
@@ -121,7 +128,7 @@
             const allPackages = [...staticPackages, ...dynamicPackages];
 
             // Display packages
-            displayRepositories(allPackages, 'package-list', 'https://github.com/gesslar/');
+            displayRepositories(allPackages, 'package-list', 'https://github.com/gesslar/', true);
 
             // Display tools
             displayRepositories(dynamicTools, 'tools-list', './');
